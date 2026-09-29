@@ -1,0 +1,11 @@
+[package]
+name = "tabler-slint"
+description = "Use Tabler Icons in Slint applications."
+version = "3.48.0"
+edition = "2024"
+license = "MIT"
+include = ["tabler.slint", "src/lib.rs", "LICENSE", "LICENSE-TABLER", "README.md"]
+
+[package.metadata]
+icons-package = "@tabler/icons"
+icons-version = "3.48.0"

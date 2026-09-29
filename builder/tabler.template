@@ -1,0 +1,78 @@
+export struct PathElem {
+    viewbox-x: float,
+    viewbox-y: float,
+    viewbox-width: float,
+    viewbox-height: float,
+
+    command: string,
+    has_fill: bool,
+    has_stroke: bool,
+}
+
+export struct Icon {
+    paths: [PathElem],
+}
+
+export global IconSet {
+    {% for icon in outline_icons %}
+    out property <Icon> {{ icon.name_pascal }}: {
+        paths: [
+            {% for path in icon.paths %}{
+                viewbox-x: {{ path.viewbox_x }},
+                viewbox-y: {{ path.viewbox_y }},
+                viewbox-width: {{ path.viewbox_width }},
+                viewbox-height: {{ path.viewbox_height }},
+                command: "{{ path.commands }}",
+                has_fill: {{ path.has_fill }},
+                has_stroke: {{ path.has_stroke }},
+            }{% if not loop.last %},{% endif %}{% endfor %}
+        ],
+    };
+    {% endfor %}
+}
+
+export global FilledIconSet {
+    {% for icon in filled_icons %}
+    out property <Icon> {{ icon.name_pascal }}: {
+        paths: [
+            {% for path in icon.paths %}{
+                viewbox-x: {{ path.viewbox_x }},
+                viewbox-y: {{ path.viewbox_y }},
+                viewbox-width: {{ path.viewbox_width }},
+                viewbox-height: {{ path.viewbox_height }},
+                command: "{{ path.commands }}",
+                has_fill: {{ path.has_fill }},
+                has_stroke: {{ path.has_stroke }},
+            }{% if not loop.last %},{% endif %}{% endfor %}
+        ],
+    };
+    {% endfor %}
+}
+
+export component IconDisplay inherits Rectangle {
+    in property <Icon> icon;
+    in-out property <length> size: 24px;
+    in-out property <brush> color: white;
+    in-out property <float> stroke-width: 2.0;
+    in-out property <bool> absolute-stroke-width: false;
+    out property <length> calculated-stroke-width: absolute-stroke-width ? (stroke-width * 1px) : (size / 24 * stroke-width);
+
+    width: size;
+    height: size;
+    clip: false;
+
+    for path in icon.paths: Path {
+        x: 0;
+        y: 0;
+        viewbox-x: path.viewbox-x;
+        viewbox-y: path.viewbox-y;
+        viewbox-width: path.viewbox-width;
+        viewbox-height: path.viewbox-height;
+        commands: path.command;
+        stroke: path.has_stroke ? parent.color : transparent;
+        fill: path.has_fill ? parent.color : transparent;
+        stroke-width: parent.calculated-stroke-width;
+        stroke-line-cap: round;
+        stroke-line-join: round;
+    }
+}

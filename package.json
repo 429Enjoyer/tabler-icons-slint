@@ -1,0 +1,12 @@
+{
+  "name": "tabler-slint-generator",
+  "private": true,
+  "version": "3.48.0",
+  "license": "MIT",
+  "scripts": {
+    "generate": "cargo run -p builder -- generate"
+  },
+  "devDependencies": {
+    "@tabler/icons": "3.48.0"
+  }
+}
